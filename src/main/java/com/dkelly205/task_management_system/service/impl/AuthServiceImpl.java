@@ -99,7 +99,6 @@ public class AuthServiceImpl implements AuthService {
                 roleName = optionalRole.get().getName();
             }
 
-
         }
 
         return roleName;

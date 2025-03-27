@@ -33,5 +33,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, ex.getStatus());
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        // handle exceptions globally
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Something went wrong");
+    }
+
 
 }

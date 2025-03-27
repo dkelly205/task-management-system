@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path="/api/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
