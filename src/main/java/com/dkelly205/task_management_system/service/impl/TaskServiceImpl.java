@@ -7,6 +7,8 @@ import com.dkelly205.task_management_system.repository.TaskRepository;
 import com.dkelly205.task_management_system.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,10 +29,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getAllTasks() {
-        return taskRepository.findAll().stream()
-                .map(taskMapper::mapToTaskDto)
-                .toList();
+    public Page<TaskDto> findAll(PageRequest pageRequest) {
+        return taskRepository.findAll(pageRequest)
+                .map(taskMapper::mapToTaskDto);
     }
 
     @Override

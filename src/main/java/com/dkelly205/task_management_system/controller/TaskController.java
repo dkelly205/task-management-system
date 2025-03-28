@@ -2,13 +2,15 @@ package com.dkelly205.task_management_system.controller;
 
 import com.dkelly205.task_management_system.dto.TaskDto;
 import com.dkelly205.task_management_system.service.TaskService;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -27,8 +29,16 @@ public class TaskController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<List<TaskDto>> getAllTasks(){
-        List<TaskDto> tasks = taskService.getAllTasks();
+    public ResponseEntity<Page<TaskDto>> findAll(
+            @RequestParam(value="offset", required = false) Integer offset,
+            @RequestParam(value="pageSize", required = false) Integer pageSize,
+            @RequestParam(value="sortBy", required=false) String sortBy){
+
+        if(null == offset) offset = 0;
+        if(null == pageSize) pageSize = 10;
+        if(StringUtils.isEmpty(sortBy)) sortBy = "id";
+
+        Page<TaskDto> tasks = taskService.findAll(PageRequest.of(offset, pageSize, Sort.by(sortBy)));
         return ResponseEntity.ok(tasks);
 
     }
