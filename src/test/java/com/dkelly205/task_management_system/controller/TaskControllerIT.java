@@ -1,12 +1,9 @@
 package com.dkelly205.task_management_system.controller;
 
 import com.dkelly205.task_management_system.dto.TaskDto;
-import com.dkelly205.task_management_system.entity.Task;
 import com.dkelly205.task_management_system.service.TaskService;
-import com.dkelly205.task_management_system.service.impl.TaskServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.dkelly205.task_management_system.TestData.testTaskReact;
+import static com.dkelly205.task_management_system.TestData.testTaskDto;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -52,7 +49,7 @@ public class TaskControllerIT {
     @Test
     public void testThatTaskIsCreated() throws Exception {
 
-        final TaskDto task = testTaskReact();
+        final TaskDto task = testTaskDto();
         final ObjectMapper objectMapper = new ObjectMapper();
         final String taskJson = objectMapper.writeValueAsString(task);
         mockMvc.perform(post("/api/v1/tasks")
@@ -69,7 +66,7 @@ public class TaskControllerIT {
     @Test
     public void testThatTaskCanBeRetrieved() throws Exception {
 
-        final TaskDto task = testTaskReact();
+        final TaskDto task = testTaskDto();
         TaskDto savedTask = taskService.createTask(task);
 
         mockMvc.perform(get("/api/v1/tasks/" + savedTask.getId())
@@ -84,7 +81,7 @@ public class TaskControllerIT {
 
     @Test
     public void testThatHttp204IsReturnedWhenTaskIsDeleted() throws Exception {
-        final TaskDto task = testTaskReact();
+        final TaskDto task = testTaskDto();
         TaskDto savedTask = taskService.createTask(task);
         mockMvc.perform(delete("/api/v1/tasks/" + savedTask.getId())
                 .header("Authorization", "Bearer " + token))
@@ -93,7 +90,7 @@ public class TaskControllerIT {
 
     @Test
     public void testThatHttp200IsReturnedWhenTaskIsCompleted() throws Exception {
-        final TaskDto task = testTaskReact();
+        final TaskDto task = testTaskDto();
         TaskDto savedTask = taskService.createTask(task);
         mockMvc.perform(patch("/api/v1/tasks/" + savedTask.getId()  + "/complete")
                         .header("Authorization", "Bearer " + token))
@@ -106,7 +103,7 @@ public class TaskControllerIT {
 
     @Test
     public void testThatHttp200IsReturnedWhenTaskChangedToIncomplete() throws Exception {
-        final TaskDto task = testTaskReact();
+        final TaskDto task = testTaskDto();
         task.setCompleted(true);
         TaskDto savedTask = taskService.createTask(task);
         mockMvc.perform(patch("/api/v1/tasks/" + savedTask.getId()  + "/incomplete")
