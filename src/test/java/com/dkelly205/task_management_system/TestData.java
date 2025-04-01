@@ -30,13 +30,13 @@ public final class TestData {
                 .build();
     }
 
-    public static List<TaskDto> aListOfTaskDtos() {
+    public static List<Task> aListOfTasks() {
         return Arrays.asList(
-                new TaskDto(1L, "React", "Description for React", false),
-                new TaskDto(2L, "HTML", "Description for HTML", true),
-                new TaskDto(3L, "CSS", "Description for CSS", false),
-                new TaskDto(4L, "AWS", "Description for AWS", false),
-                new TaskDto(5L, "Java", "Description for Java", false)
+                new Task(null, "React", "Description for React", false),
+                new Task(null, "HTML", "Description for HTML", true),
+                new Task(null, "CSS", "Description for CSS", false),
+                new Task(null, "AWS", "Description for AWS", false),
+                new Task(null, "Java", "Description for Java", false)
         );
     }
 }

@@ -2,6 +2,7 @@ package com.dkelly205.task_management_system.controller;
 
 import com.dkelly205.task_management_system.dto.TaskDto;
 import com.dkelly205.task_management_system.entity.Task;
+import com.dkelly205.task_management_system.repository.TaskRepository;
 import com.dkelly205.task_management_system.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,12 +35,15 @@ public class TaskControllerIT {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
     private String token;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    public void getBearerToken() throws Exception {
+    public void setup() throws Exception {
        ResultActions result = mockMvc.perform(post("/api/auth/login")
                .contentType("application/json")
                .content("{ \"usernameOrEmail\": \"admin\", \"password\":\"admin\"}"));
@@ -47,6 +51,8 @@ public class TaskControllerIT {
        String responseBody = result.andReturn().getResponse().getContentAsString();
        JsonNode jsonResponse = objectMapper.readTree(responseBody);
        token = jsonResponse.get("accessToken").asText();
+
+       taskRepository.deleteAll();
 
     }
 
@@ -83,24 +89,26 @@ public class TaskControllerIT {
 
     }
 
-//    @Test
-//    public void testThatHttpStatus200IsReturnedWhenRetrievingTasks() throws Exception {
-//
-//        List<TaskDto> taskDtos = aListOfTaskDtos();
-//        taskDtos.forEach(taskDto -> taskService.createTask(taskDto));
-//
-//        mockMvc.perform(get("/api/v1/tasks")
-//                        .header("Authorization", "Bearer " + token))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(jsonPath("$").isArray())
-//                .andExpect(jsonPath("$").isNotEmpty())
-//                .andExpect(jsonPath("$[0].title").value(taskDtos.get(0).getTitle()))
-//                .andExpect(jsonPath("$[1].title").value(taskDtos.get(1).getTitle()))
-//                .andExpect(jsonPath("$[2].title").value(taskDtos.get(2).getTitle()));
-//
-//
-//    }
-//
+    @Test
+    public void testThatHttpStatus200IsReturnedWhenRetrievingTasks() throws Exception {
+
+        List<Task> tasks = aListOfTasks();
+        tasks.forEach(task -> taskRepository.save(task));
+
+        mockMvc.perform(get("/api/v1/tasks")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(5))
+                .andExpect(jsonPath("$.content[0].title").value(tasks.get(0).getTitle()))
+                .andExpect(jsonPath("$.content[1].title").value(tasks.get(1).getTitle()))
+                .andExpect(jsonPath("$.content[2].title").value(tasks.get(2).getTitle()))
+                .andExpect(jsonPath("$.content[3].title").value(tasks.get(3).getTitle()))
+                .andExpect(jsonPath("$.content[4].title").value(tasks.get(4).getTitle()))
+                .andExpect(jsonPath("$.totalElements").value(5)) // Total number of tasks in the database
+                .andExpect(jsonPath("$.totalPages").value(1));
+
+    }
+
 //    @Test
 //    public void testThatTasksAreSortedByTitle() throws Exception {
 //
