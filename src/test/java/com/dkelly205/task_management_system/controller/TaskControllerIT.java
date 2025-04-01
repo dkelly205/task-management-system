@@ -1,6 +1,7 @@
 package com.dkelly205.task_management_system.controller;
 
 import com.dkelly205.task_management_system.dto.TaskDto;
+import com.dkelly205.task_management_system.entity.Task;
 import com.dkelly205.task_management_system.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,8 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.dkelly205.task_management_system.TestData.testTaskDto;
+import java.util.List;
+
+import static com.dkelly205.task_management_system.TestData.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,9 +61,9 @@ public class TaskControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskJson))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(task.getTitle()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(task.getDescription()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.completed").value(task.isCompleted()));
+                .andExpect(jsonPath("$.title").value(task.getTitle()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()))
+                .andExpect(jsonPath("$.completed").value(task.isCompleted()));
 
     }
 
@@ -72,12 +76,45 @@ public class TaskControllerIT {
         mockMvc.perform(get("/api/v1/tasks/" + savedTask.getId())
                 .header("Authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(task.getTitle()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(task.getDescription()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.completed").value(task.isCompleted()));
+                .andExpect(jsonPath("$.title").value(task.getTitle()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()))
+                .andExpect(jsonPath("$.completed").value(task.isCompleted()));
 
 
     }
+
+//    @Test
+//    public void testThatHttpStatus200IsReturnedWhenRetrievingTasks() throws Exception {
+//
+//        List<TaskDto> taskDtos = aListOfTaskDtos();
+//        taskDtos.forEach(taskDto -> taskService.createTask(taskDto));
+//
+//        mockMvc.perform(get("/api/v1/tasks")
+//                        .header("Authorization", "Bearer " + token))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(jsonPath("$").isArray())
+//                .andExpect(jsonPath("$").isNotEmpty())
+//                .andExpect(jsonPath("$[0].title").value(taskDtos.get(0).getTitle()))
+//                .andExpect(jsonPath("$[1].title").value(taskDtos.get(1).getTitle()))
+//                .andExpect(jsonPath("$[2].title").value(taskDtos.get(2).getTitle()));
+//
+//
+//    }
+//
+//    @Test
+//    public void testThatTasksAreSortedByTitle() throws Exception {
+//
+//        List<TaskDto> taskDtos = aListOfTaskDtos();
+//        taskDtos.forEach(taskDto -> taskService.createTask(taskDto));
+//
+//
+//
+//        mockMvc.perform(get("/api/v1/tasks?pageSize=5&offset=0&sortBy=title")
+//                        .header("Authorization", "Bearer " + token))
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//
+//
+//    }
 
     @Test
     public void testThatHttp204IsReturnedWhenTaskIsDeleted() throws Exception {
@@ -95,9 +132,9 @@ public class TaskControllerIT {
         mockMvc.perform(patch("/api/v1/tasks/" + savedTask.getId()  + "/complete")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(task.getTitle()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(task.getDescription()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.completed").value(!task.isCompleted()));
+                .andExpect(jsonPath("$.title").value(task.getTitle()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()))
+                .andExpect(jsonPath("$.completed").value(!task.isCompleted()));
     }
 
 
@@ -109,9 +146,9 @@ public class TaskControllerIT {
         mockMvc.perform(patch("/api/v1/tasks/" + savedTask.getId()  + "/incomplete")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(task.getTitle()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(task.getDescription()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.completed").value(!task.isCompleted()));
+                .andExpect(jsonPath("$.title").value(task.getTitle()))
+                .andExpect(jsonPath("$.description").value(task.getDescription()))
+                .andExpect(jsonPath("$.completed").value(!task.isCompleted()));
     }
 
 
