@@ -109,20 +109,60 @@ public class TaskControllerIT {
 
     }
 
-//    @Test
-//    public void testThatTasksAreSortedByTitle() throws Exception {
-//
-//        List<TaskDto> taskDtos = aListOfTaskDtos();
-//        taskDtos.forEach(taskDto -> taskService.createTask(taskDto));
-//
-//
-//
-//        mockMvc.perform(get("/api/v1/tasks?pageSize=5&offset=0&sortBy=title")
-//                        .header("Authorization", "Bearer " + token))
-//                .andExpect(MockMvcResultMatchers.status().isOk());
-//
-//
-//    }
+    @Test
+    public void testThatTasksAreOrderedByTitle() throws Exception {
+
+        List<Task> tasks = aListOfTasks();
+        tasks.forEach(task -> taskRepository.save(task));
+
+        mockMvc.perform(get("/api/v1/tasks?sortBy=title")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(5))
+                .andExpect(jsonPath("$.content[0].title").value(tasks.get(3).getTitle()))
+                .andExpect(jsonPath("$.content[1].title").value(tasks.get(2).getTitle()))
+                .andExpect(jsonPath("$.content[2].title").value(tasks.get(1).getTitle()))
+                .andExpect(jsonPath("$.content[3].title").value(tasks.get(4).getTitle()))
+                .andExpect(jsonPath("$.content[4].title").value(tasks.get(0).getTitle()))
+                .andExpect(jsonPath("$.totalElements").value(5)) // Total number of tasks in the database
+                .andExpect(jsonPath("$.totalPages").value(1));
+
+    }
+
+    @Test
+    public void testPageSizeWhenRetrievingTasks() throws Exception {
+
+        List<Task> tasks = aListOfTasks();
+        tasks.forEach(task -> taskRepository.save(task));
+
+        mockMvc.perform(get("/api/v1/tasks?pageSize=3")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(3))
+                .andExpect(jsonPath("$.content[0].title").value(tasks.get(0).getTitle()))
+                .andExpect(jsonPath("$.content[1].title").value(tasks.get(1).getTitle()))
+                .andExpect(jsonPath("$.content[2].title").value(tasks.get(2).getTitle()))
+                .andExpect(jsonPath("$.totalElements").value(5)) // Total number of tasks in the database
+                .andExpect(jsonPath("$.totalPages").value(2));
+
+    }
+
+    @Test
+    public void testOffsetWhenRetrievingTasks() throws Exception {
+
+        List<Task> tasks = aListOfTasks();
+        tasks.forEach(task -> taskRepository.save(task));
+
+        mockMvc.perform(get("/api/v1/tasks?offset=1&pageSize=3")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].title").value(tasks.get(3).getTitle()))
+                .andExpect(jsonPath("$.content[1].title").value(tasks.get(4).getTitle()))
+                .andExpect(jsonPath("$.totalElements").value(5)) // Total number of tasks in the database
+                .andExpect(jsonPath("$.totalPages").value(2));
+
+    }
 
     @Test
     public void testThatHttp204IsReturnedWhenTaskIsDeleted() throws Exception {
