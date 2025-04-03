@@ -32,7 +32,9 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.PATCH, "/api/v1/tasks/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                                .anyRequest().authenticated()
         )
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults());
