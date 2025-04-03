@@ -16,6 +16,7 @@ This is built from following a tutorial that has a spring boot backend and react
 - H2
 - Flyway
 - Mapstruct
+- Open API
 
 ### Frontend
  - WIP
