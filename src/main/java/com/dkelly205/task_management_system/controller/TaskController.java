@@ -3,6 +3,7 @@ package com.dkelly205.task_management_system.controller;
 import com.dkelly205.task_management_system.dto.TaskDto;
 import com.dkelly205.task_management_system.service.TaskService;
 import io.micrometer.common.util.StringUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,7 @@ public class TaskController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto){
+    public ResponseEntity<TaskDto> createTask(@RequestBody @Valid TaskDto taskDto){
         TaskDto createdTask = taskService.createTask(taskDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }

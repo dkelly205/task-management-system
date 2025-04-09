@@ -1,6 +1,7 @@
 package com.dkelly205.task_management_system.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
