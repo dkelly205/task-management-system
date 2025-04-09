@@ -10,6 +10,7 @@ This is built from following a tutorial that has a spring boot backend and react
 - Java 17
 - Spring Boot
 - Spring JPA
+- Spring Validation
 - Spring Security
 - JWT
 - Lombok
