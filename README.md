@@ -25,3 +25,18 @@ This is built from following a tutorial that has a spring boot backend and react
 ## Testing
 - unit tests
 - integration tests
+
+
+
+### Create a task flow:
+```mermaid
+ sequenceDiagram
+TaskController->>TaskService: createTask
+TaskService->>TaskMapper: mapToTask
+TaskMapper->>TaskService: Task
+TaskService->>TaskRepository: save
+TaskRepository->>TaskService: saved Task
+TaskService->>TaskMapper: mapToTaskDto
+TaskMapper->>TaskService: TaskDto
+TaskService->>TaskController: TaskDto
+```
